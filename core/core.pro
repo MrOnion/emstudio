@@ -5,7 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui declarative opengl
-#CONFIG += debug
+#CONFIG += macports 
 TARGET = emstudio
 TEMPLATE = app
 INCLUDEPATH += src
@@ -53,8 +53,15 @@ macx {
 	config.path = Contents/Resources
 	config.files += freeems.config.json decodersettings.json
 	QMAKE_BUNDLE_DATA += dashboard config
-	INCLUDEPATH += /Library/Frameworks/qwt.framework/Headers /Library/Frameworks/qjson.framework/Headers
-	LIBS += -framework qwt -framework qjson -framework OpenGL -framework GLUT
+	CONFIG(macports) {
+		INCLUDEPATH += /opt/local/include/qwt /opt/local/include/qjson 
+		LIBS += -lqwt -lqjson
+	}
+	!CONFIG(macports) {
+		INCLUDEPATH += /Library/Frameworks/qwt.framework/Headers /Library/Frameworks/qjson.framework/Headers
+		LIBS += -framework qwt -framework qjson
+	}
+	LIBS += -framework OpenGL -framework GLUT
 	DEFINES += GIT_COMMIT=$$system(git describe --dirty=-DEV --always)
 	DEFINES += GIT_HASH=$$system(git log -n 1 --pretty=format:%H)
 }
