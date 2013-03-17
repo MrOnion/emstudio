@@ -48,7 +48,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
 	m_settingsFile = "settings.ini";
 	//TODO: Figure out proper directory names
-#ifdef Q_OS_WIN32
+#if defined(Q_OS_WIN32)
 	QString appDataDir = getenv("%AppData%");
 	appDataDir = appDataDir.replace("\\","/");
 	if (!QDir(appDataDir).exists("EMStudio"))
@@ -61,8 +61,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 	//%HOMEPATH%//m_localHomeDir
 	m_localHomeDir = QString(getenv("%USERPROFILE%")).replace("\\","/") + "/EMStudio";
 	//m_settingsFile = appDataDir + "/" + "EMStudio/EMStudio-config.ini";
-//#elif Q_OS_MAC //<- Does not exist. Need OSX checking capabilities somewhere...
-	//Linux and Mac function identically here for now...
+#elif defined(Q_OS_MAC) // OSX
+	m_defaultsDir = QCoreApplication::applicationDirPath() + "/../Resources";
+	m_settingsDir = m_defaultsDir;
 #else //if Q_OS_LINUX
 	QString appDataDir = getenv("HOME");
 	if (!QDir(appDataDir).exists(".EMStudio"))
@@ -226,6 +227,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 	else if (QFile::exists("plugins/freeemsplugin.lib"))
 	{
 		m_pluginFileName = "plugins/freeemsplugin.lib";
+	}
+	else if (QFile::exists(m_defaultsDir + "/plugins/libfreeemsplugin.dylib"))
+	{
+		m_pluginFileName = m_defaultsDir + "/plugins/libfreeemsplugin.dylib";
 	}
 	qDebug() << "Loading plugin from:" << m_pluginFileName;
 	pluginLoader->setFileName(m_pluginFileName);

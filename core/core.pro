@@ -30,7 +30,7 @@ win32-g++ {
         DEFINES += GIT_COMMIT=$$system(\"c:/program files/git/bin/git.exe\" describe --dirty=-DEV --always)
         DEFINES += GIT_HASH=$$system(\"c:/program files/git/bin/git.exe\" log -n 1 --pretty=format:%H)
 }
-unix {
+unix!macx {
 	QMAKE_CXXFLAGS += -Werror
 	target.path = /usr/bin
 	dashboard.path = /usr/share/emstudio/dashboards
@@ -43,10 +43,20 @@ unix {
 	DEFINES += GIT_COMMIT=$$system(git describe --dirty=-DEV --always)
 	DEFINES += GIT_HASH=$$system(git log -n 1 --pretty=format:%H)
 }
-mac {
+macx {
+	TARGET = EMStudio
+	QMAKE_LFLAGS -= -static-libgcc
 	QMAKE_CXXFLAGS += -Werror
-	INCLUDEPATH += /opt/local/include
-	INCLUDEPATH += /opt/local/include/qwt
+	QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.6
+	dashboard.path = Contents/Resources/dashboards
+	dashboard.files += src/gauges.qml
+	config.path = Contents/Resources
+	config.files += freeems.config.json decodersettings.json
+	QMAKE_BUNDLE_DATA += dashboard config
+	INCLUDEPATH += /Library/Frameworks/qwt.framework/Headers /Library/Frameworks/qjson.framework/Headers
+	LIBS += -framework qwt -framework qjson -framework OpenGL -framework GLUT
+	DEFINES += GIT_COMMIT=$$system(git describe --dirty=-DEV --always)
+	DEFINES += GIT_HASH=$$system(git log -n 1 --pretty=format:%H)
 }
 SOURCES += src/main.cpp\
 	src/mainwindow.cpp \
