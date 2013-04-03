@@ -39,6 +39,16 @@ machine configurations to do any real support. If someone is interested in maint
 work through it with you, but it's too much of a mess to provide general support. I'll handle compiling binaries for now.
 
 
+#### Mac OSX:
+
+There are two ways to compile EMStudio in OSX. You can use QT SDK and QWT + QJSON installed as frameworks or getting everything from macports. The latter may be the easier way.
+
+Follow everything as in Linux build but if using macports add this option into qmake command:
+
+$ qmake "CONFIG+=macports" 
+
+After make you should have a application bundle called "EMStudio.app".
+
 ##More Information
 
 http://malcom2073.github.com/emstudio/

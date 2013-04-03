@@ -52,7 +52,9 @@ macx {
 	dashboard.files += src/gauges.qml
 	config.path = Contents/Resources
 	config.files += freeems.config.json decodersettings.json
-	QMAKE_BUNDLE_DATA += dashboard config
+	plugins.path = Contents/Resources
+	plugins.files = plugins
+	QMAKE_BUNDLE_DATA += dashboard config plugins
 	CONFIG(macports) {
 		INCLUDEPATH += /opt/local/include/qwt /opt/local/include/qjson 
 		LIBS += -lqwt -lqjson
