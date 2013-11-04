@@ -50,8 +50,8 @@ unix {
 	config.path = /usr/share/EMStudio/definitions
 	config.files += freeems.config.json
 	INSTALLS += target config dashboard
-	LIBS += -lqwt -lqjson -lGL -lGLU -lglut
-	INCLUDEPATH += /usr/include/qwt
+        LIBS += -lqwt -lqjson -lGL -lGLU -lglut
+        INCLUDEPATH += /usr/include/qwt /usr/include/boost
 	DEFINES += GIT_COMMIT=$$system(git describe --dirty=-DEV --always)
 	DEFINES += GIT_HASH=$$system(git log -n 1 --pretty=format:%H)
 }
@@ -91,7 +91,13 @@ SOURCES += src/main.cpp\
     src/configview.cpp \
     src/configblock.cpp \
     src/emsdata.cpp \
-    src/tablewidgetdelegate.cpp
+    src/tablewidgetdelegate.cpp \
+    src/roundgaugeitem.cpp \
+    src/customgaugeview.cpp \
+    src/customgaugewidget.cpp \
+    src/abstractgaugeitem.cpp \
+    src/gaugeutil.cpp \
+    src/bargaugeitem.cpp
 
 
 HEADERS  += src/mainwindow.h \
@@ -131,7 +137,13 @@ HEADERS  += src/mainwindow.h \
     memorymetadata.h \
     src/tablewidgetdelegate.h \
     emscomms.h \
-    datapacketdecoder.h
+    datapacketdecoder.h \
+    src/roundgaugeitem.h \
+    src/customgaugeview.h \
+    src/customgaugewidget.h \
+    src/abstractgaugeitem.h \
+    src/gaugeutil.h \
+    src/bargaugeitem.h
 
 FORMS    += src/mainwindow.ui \
     src/comsettings.ui \

@@ -38,7 +38,7 @@
 #include "emsinfoview.h"
 #include "tableview.h"
 #include "rawdataview.h"
-#include "gaugeview.h"
+#include "customgaugeview.h"
 #include "flagview.h"
 #include "packetstatusview.h"
 #include "aboutview.h"
@@ -101,7 +101,7 @@ private:
 	QList<ConfigData> m_configMetaData;
 	MemoryMetaData *m_memoryMetaData;
 	TableView *dataTables;
-	GaugeView *dataGauges;
+    CustomGaugeView *dataGauges;
 	EmsInfoView *emsInfo;
 	FlagView *dataFlags;
 	QString m_logFileName;

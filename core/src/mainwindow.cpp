@@ -275,7 +275,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 	aboutMdiWindow->hide();
 	aboutMdiWindow->setWindowTitle(aboutView->windowTitle());
 
-	dataGauges = new GaugeView();
+    dataGauges = new CustomGaugeView();
 	//connect(dataGauges,SIGNAL(destroyed()),this,SLOT(dataGaugesDestroyed()));
 	gaugesMdiWindow = ui.mdiArea->addSubWindow(dataGauges);
 	gaugesMdiWindow->setGeometry(dataGauges->geometry());
