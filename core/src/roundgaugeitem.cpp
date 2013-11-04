@@ -77,13 +77,6 @@ void RoundGaugeItem::drawBackground() {
         painter.drawArc(m_locationXY, m_locationXY, m_sizeXY, m_sizeXY, 0, degreesHighDanger);
     }
 
-    // Highlight arc
-    if (isHighlighted(m_value)) {
-        m_penArc.setColor(getStatusColor(m_value));
-        painter.setPen(m_penArc);
-        painter.drawArc(m_locationHighlightXY, m_locationHighlightXY, m_sizeHighlightXY, m_sizeHighlightXY, 0, arcSize);
-    }
-
     // Title
     m_penArc.setColor(Qt::white);
     painter.setPen(m_penArc);
@@ -124,6 +117,13 @@ void RoundGaugeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *st
 
     // Background
     painter->drawImage(0, 0, *m_background);
+
+    // Highlight arc
+    if (isHighlighted()) {
+        m_penArc.setColor(getStatusColor());
+        painter->setPen(m_penArc);
+        painter->drawArc(m_locationHighlightXY, m_locationHighlightXY, m_sizeHighlightXY, m_sizeHighlightXY, 0, arcSize);
+    }
 
     // Needle
     if (isRangeSet()) {

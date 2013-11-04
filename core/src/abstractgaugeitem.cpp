@@ -106,7 +106,7 @@ bool AbstractGaugeItem::isRangeSet() {
     return true;
 }
 
-int AbstractGaugeItem::getStatus(double value) {
+int AbstractGaugeItem::getStatus() {
     if (isRangeSet()) {
         if (m_lowDanger) {
             if (m_value <= m_lowDanger.get()) {
@@ -119,12 +119,12 @@ int AbstractGaugeItem::getStatus(double value) {
             }
         }
         if (m_lowWarning) {
-            if (value <= m_lowWarning.get()) {
+            if (m_value <= m_lowWarning.get()) {
                 return STATUS_WARNING;
             }
         }
         if (m_highWarning) {
-            if (value >= m_highWarning.get()) {
+            if (m_value >= m_highWarning.get()) {
                 return STATUS_WARNING;
             }
         }
@@ -133,18 +133,18 @@ int AbstractGaugeItem::getStatus(double value) {
     return STATUS_OK;
 }
 
-bool AbstractGaugeItem::isHighlighted(double value) {
-    if (getStatus(value) == STATUS_WARNING || getStatus(value) == STATUS_DANGER) {
+bool AbstractGaugeItem::isHighlighted() {
+    if (getStatus() == STATUS_WARNING || getStatus() == STATUS_DANGER) {
         return true;
     } else {
         return false;
     }
 }
 
-QColor AbstractGaugeItem::getStatusColor(double value) {
-    if (getStatus(value) == STATUS_DANGER) {
+QColor AbstractGaugeItem::getStatusColor() {
+    if (getStatus() == STATUS_DANGER) {
         return colorDanger;
-    } else if (getStatus(value) == STATUS_WARNING) {
+    } else if (getStatus() == STATUS_WARNING) {
         return colorWarning;
     } else {
         return colorOk;

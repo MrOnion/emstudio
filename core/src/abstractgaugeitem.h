@@ -53,9 +53,9 @@ protected:
     static const QColor colorValue;
 
     bool isRangeSet();
-    int getStatus(double value);
-    bool isHighlighted(double value);
-    QColor getStatusColor(double value);
+    int getStatus();
+    bool isHighlighted();
+    QColor getStatusColor();
 
 private:
     bool m_isResized;

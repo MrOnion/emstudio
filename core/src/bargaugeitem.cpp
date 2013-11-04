@@ -113,7 +113,6 @@ void BarGaugeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *styl
 
     // Needle
     if (isRangeSet()) {
-        qDebug(">>> %d %d %d %d", (int)m_value, (int)m_pad, (int)m_range, (int)m_barSize);
         float valuePoint = ((float) ((m_value + m_pad) / m_range)) * m_barSize + m_padding;
         painter->drawLine(valuePoint, 20, valuePoint, 40);
     }
