@@ -21,7 +21,7 @@ Rectangle {
         width:300
         height:300
         low:0
-        high:150
+        high:50
         title: "PW"
         property string propertyMapProperty: "EffectivePW"
         value: (propertyMap["EffectivePW"] ? propertyMap["EffectivePW"] : 0)
@@ -35,10 +35,10 @@ Rectangle {
         height:300
         low: 0
         high: 2
-        lowDanger: 0.3
+        lowDanger: 0.4
         lowWarning: 0.8
         highWarning: 1.2
-        highDanger: 1.7
+        highDanger: 1.6
         decimal: 2
         title: "EGO"
         property string propertyMapProperty:"EGO"
@@ -67,7 +67,7 @@ Rectangle {
         width:200
         height:200
         low: 0
-        high: 255
+        high: 127
         title: "VE"
         property string propertyMapProperty:"VEMain"
         value: (propertyMap["VEMain"] ? propertyMap["VEMain"] : 0)
@@ -94,7 +94,7 @@ Rectangle {
         width:200
         height:200
         low: 0
-        high: 255
+        high: 600
         title: "MAP"
         property string propertyMapProperty:"MAP"
         value: (propertyMap["MAP"] ? propertyMap["MAP"] : 0)
@@ -124,6 +124,8 @@ Rectangle {
         height:200
         low: 0
         high: 10
+        lowWarning: 1
+        lowDanger: 0.5
         highWarning: 6
         highDanger: 8
         decimal: 2
