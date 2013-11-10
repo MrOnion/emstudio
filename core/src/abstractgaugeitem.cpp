@@ -3,7 +3,7 @@
  * Copyright (C) 2013  Michael Carpenter (malcom2073@gmail.com)                     *
  *                                                                                  *
  * This file is a part of EMStudio                                                  *
- * Author: Ari Karhu (ari@baboonplanet.com)                                         *
+ * Author: Ari "MrOnion" Karhu (ari@baboonplanet.com)                               *
  *                                                                                  *
  * EMStudio is free software; you can redistribute it and/or                        *
  * modify it under the terms of the GNU Lesser General Public                       *

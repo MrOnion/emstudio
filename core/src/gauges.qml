@@ -1,5 +1,11 @@
+/**
+ * Aviator gauge set
+ *
+ * Author: Ari "MrOnion" Karhu (ari@baboonplanet.com)
+ */
+
 import Qt 4.7
-import CustomGauges 0.1
+import AviatorGauges 0.1
 
 Rectangle {
 	x:0
