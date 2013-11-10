@@ -15,10 +15,7 @@ void BarGaugeItem::init() {
     m_size = this->width();
     m_barSize = m_size * 0.95f;
     m_range = m_high - m_low;
-
-    if (m_low < 0) {
-        m_pad = fabs(m_low);
-    }
+    m_gap = 2; // FIXME Fixed value for now...
 
     m_padding = (m_size - m_barSize) / 2;
 
@@ -40,52 +37,65 @@ void BarGaugeItem::drawBackground() {
     painter.drawRect(0, 0, this->width(), this->height());
 
     // Bar
-    int locationY = this->height() / 3;
+    int locationY = this->height() / 4;
+    int barNormalStart = m_padding;
+    int barNormalEnd = m_barSize + m_padding;
 
-    m_penBar.setColor(colorOk);
-    painter.setPen(m_penBar);
-    painter.drawLine(m_padding, locationY, m_barSize + m_padding, locationY);
+    // Paddings for warning zones
+    int lengthLowDanger = 0;
+    int lengthHighDanger = 0;
 
-    m_penBar.setColor(colorWarning);
-    painter.setPen(m_penBar);
-
-    if (m_lowWarning) {
-        float lengthLowWarning = (float) ((m_lowWarning.get() + m_pad) / m_range) * m_barSize + m_padding;
-        painter.drawLine(m_padding, locationY, lengthLowWarning, locationY);
-    }
-
-    if (m_highWarning) {
-        float lengthHighWarning = (float) ((m_high - m_highWarning.get() + m_pad) / m_range) * m_barSize;
-        painter.drawLine(m_padding + m_barSize - lengthHighWarning, locationY, m_padding + m_barSize, locationY);
-    }
-
+    // Danger zones
     m_penBar.setColor(colorDanger);
     painter.setPen(m_penBar);
 
     if (m_lowDanger) {
-        float lengthLowDanger = (float) ((m_lowDanger.get() + m_pad) / m_range) * m_barSize + m_padding;
-        painter.drawLine(m_padding, locationY, lengthLowDanger, locationY);
+        lengthLowDanger = ((m_lowDanger.get() - m_low) / m_range) * m_barSize;
+        painter.drawLine(m_padding, locationY, lengthLowDanger + m_padding - m_gap, locationY);
+        barNormalStart += lengthLowDanger;
     }
 
     if (m_highDanger) {
-        float lengthHighDanger = (float) ((m_high - m_highDanger.get() + m_pad) / m_range) * m_barSize;
-        painter.drawLine(m_padding + m_barSize - lengthHighDanger, locationY, m_padding + m_barSize, locationY);
+        lengthHighDanger = ((m_high - m_highDanger.get()) / m_range) * m_barSize;
+        painter.drawLine(m_padding + m_barSize - lengthHighDanger + m_gap, locationY, m_padding + m_barSize, locationY);
+        barNormalEnd -= lengthHighDanger;
     }
 
+    // Warning zones
+    m_penBar.setColor(colorWarning);
+    painter.setPen(m_penBar);
+
+    if (m_lowWarning) {
+        int lengthLowWarning = ((m_lowWarning.get() - m_low) / m_range) * m_barSize;
+        painter.drawLine(m_padding + lengthLowDanger, locationY, lengthLowWarning + m_padding - m_gap, locationY);
+        barNormalStart += (lengthLowWarning - lengthLowDanger);
+    }
+
+    if (m_highWarning) {
+        int lengthHighWarning = ((m_high - m_highWarning.get()) / m_range) * m_barSize;
+        painter.drawLine(m_padding + m_barSize - lengthHighWarning + m_gap, locationY, m_padding + m_barSize - lengthHighDanger, locationY);
+        barNormalEnd -= (lengthHighWarning - lengthHighDanger);
+    }
+
+    // Normal zone
+    m_penBar.setColor(colorOk);
+    painter.setPen(m_penBar);
+    painter.drawLine(barNormalStart, locationY, barNormalEnd, locationY);
+
+    // Reset pen
     m_penBar.setColor(Qt::white);
     painter.setPen(m_penBar);
 
     // Title
     painter.setFont(m_fontTitle);
-    int valueX = (int (this->width() * 0.01f));
     int valueY = (int (this->height() * 0.65f));
-    painter.drawText(valueX, valueY, m_title);
+    painter.drawText(m_padding, valueY, m_title);
 
     // Unit
     painter.setFont(m_fontUnit);
     QFontMetrics metrics(m_fontUnit);
     QRect bbox = metrics.boundingRect(m_unit);
-    valueX = (int (this->width() * 0.95f - (float) bbox.width()));
+    int valueX = m_size - bbox.width() - m_padding;
     valueY = (int (this->height() * 0.85f));
     painter.drawText(valueX, valueY, m_unit);
 
@@ -113,12 +123,17 @@ void BarGaugeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *styl
 
     // Needle
     if (isRangeSet()) {
-        float valuePoint = ((float) ((m_value + m_pad) / m_range)) * m_barSize + m_padding;
-        painter->drawLine(valuePoint, 20, valuePoint, 40);
+        int valuePoint = ((m_value - m_low) / m_range) * m_barSize + m_padding;
+        painter->drawLine(valuePoint, m_padding * 2, valuePoint, m_padding * 7);
     }
 
     // Value
     painter->setFont(m_fontValue);
+
+    if (isHighlighted()) {
+        m_penNeedle.setColor(getStatusColor());
+        painter->setPen(m_penNeedle);
+    }
 
     QString valueText;
     valueText = valueText.setNum(m_value, 'f', m_decimal);
@@ -126,7 +141,7 @@ void BarGaugeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *styl
     QFontMetrics metrics(m_fontValue);
     QRect bbox = metrics.boundingRect(valueText);
 
-    int valueX = (int (this->width() * 0.95f - ((float) bbox.width())));
+    int valueX = m_size - bbox.width() - m_padding;
     int valueY = (int (this->height() * 0.70f));
 
     painter->drawText(valueX, valueY, valueText);

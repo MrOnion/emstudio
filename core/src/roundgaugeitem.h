@@ -25,7 +25,7 @@ private:
     int m_size;
     float m_halfsize;
     double m_range;
-    double m_pad;
+    int m_gap;
 
     int m_locationXY;
     int m_locationHighlightXY;

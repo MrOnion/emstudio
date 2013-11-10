@@ -21,8 +21,8 @@ private:
     int m_size;
     int m_barSize;
     int m_padding;
-    double m_pad;
     double m_range;
+    int m_gap;
 
     QPen m_penBar;
     QPen m_penNeedle;

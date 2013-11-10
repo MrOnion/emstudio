@@ -14,10 +14,7 @@ RoundGaugeItem::RoundGaugeItem(QWidget *parent)
 void RoundGaugeItem::init() {
     m_size = this->width();
     m_halfsize = m_size / 2;
-
-    if (m_low < 0) {
-        m_pad = fabs(m_low);
-    }
+    m_gap = 25;
 
     m_range = m_high - m_low;
 
@@ -44,38 +41,53 @@ void RoundGaugeItem::drawBackground() {
     painter.drawRect(0, 0, this->width(), this->height());
 
     // Arcs
+    int degreesNormalStart = 0;
+    int degreesNormalSize = arcSize;
 
-    //TODO: don't draw arcs on top of each other
+    // Paddings for warning zones
+    int degreesLowDanger = 0;
+    int degreesHighDanger = 0;
 
-    m_penArc.setColor(colorOk);
-    painter.setPen(m_penArc);
-    painter.drawArc(m_locationXY, m_locationXY, m_sizeXY, m_sizeXY, 0, arcSize);
-
-    m_penArc.setColor(colorWarning);
-    painter.setPen(m_penArc);
-
-    if (m_lowWarning) {
-        int degreesLowWarning = (int ((m_lowWarning.get() + m_pad) * arcSize / m_range));
-        painter.drawArc(m_locationXY, m_locationXY, m_sizeXY, m_sizeXY, (arcSize - degreesLowWarning), degreesLowWarning);
-    }
-
-    if (m_highWarning) {
-        int degreesHighWarning = (int ((m_high - m_highWarning.get() + m_pad) * arcSize / m_range));
-        painter.drawArc(m_locationXY, m_locationXY, m_sizeXY, m_sizeXY, 0, degreesHighWarning);
-    }
-
+    // Danger zones
     m_penArc.setColor(colorDanger);
     painter.setPen(m_penArc);
 
     if (m_lowDanger) {
-        int degreesLowDanger = (int ((m_lowDanger.get() + m_pad) * arcSize / m_range));
-        painter.drawArc(m_locationXY, m_locationXY, m_sizeXY, m_sizeXY, (arcSize - degreesLowDanger), degreesLowDanger);
+        degreesLowDanger = (int ((m_lowDanger.get() - m_low) * arcSize / m_range));
+        painter.drawArc(m_locationXY, m_locationXY, m_sizeXY, m_sizeXY, (arcSize - degreesLowDanger + m_gap), (degreesLowDanger - m_gap));
+        degreesNormalSize -= degreesLowDanger;
     }
 
     if (m_highDanger) {
-        int degreesHighDanger = (int ((m_high - m_highDanger.get() + m_pad) * arcSize / m_range));
-        painter.drawArc(m_locationXY, m_locationXY, m_sizeXY, m_sizeXY, 0, degreesHighDanger);
+        degreesHighDanger = (int ((m_high - m_highDanger.get() - m_low) * arcSize / m_range));
+        painter.drawArc(m_locationXY, m_locationXY, m_sizeXY, m_sizeXY, 0, degreesHighDanger - m_gap);
+        degreesNormalSize -= degreesHighDanger;
+        degreesNormalStart += degreesHighDanger;
     }
+
+    // Warning zones
+    m_penArc.setColor(colorWarning);
+    painter.setPen(m_penArc);
+
+    if (m_lowWarning) {
+        int degreesLowWarning = (int ((m_lowWarning.get() - m_low) * arcSize / m_range));
+        painter.drawArc(m_locationXY, m_locationXY, m_sizeXY, m_sizeXY, (arcSize - degreesLowWarning + m_gap), (degreesLowWarning - degreesLowDanger - m_gap));
+        degreesNormalSize -= (degreesLowWarning - degreesLowDanger);
+    }
+
+    if (m_highWarning) {
+        int degreesHighWarning = (int ((m_high - m_highWarning.get() - m_low) * arcSize / m_range));
+        painter.drawArc(m_locationXY, m_locationXY, m_sizeXY, m_sizeXY, degreesHighDanger, (degreesHighWarning - degreesHighDanger - m_gap));
+        degreesNormalSize -= (degreesHighWarning - degreesHighDanger);
+        degreesNormalStart += (degreesHighWarning - degreesHighDanger);
+    }
+
+    // Normal zone
+    m_penArc.setColor(colorOk);
+    painter.setPen(m_penArc);
+    painter.drawArc(m_locationXY, m_locationXY, m_sizeXY, m_sizeXY, degreesNormalStart, degreesNormalSize);
+
+    // -------
 
     // Title
     m_penArc.setColor(Qt::white);
@@ -129,7 +141,7 @@ void RoundGaugeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *st
     if (isRangeSet()) {
         m_penNeedle.setColor(Qt::white);
         painter->setPen(m_penNeedle);
-        float valueAmount = (float) ((m_value + m_pad - (m_low > 0 ? m_low : 0)) / m_range);
+        float valueAmount = (float) ((m_value - m_low) / m_range);
 
         int *needlePoints1 = GaugeUtil::getPointInArc((int) m_halfsize, (int) m_halfsize, arcSize, arcStart, (int) (m_size * 0.1f), valueAmount);
         int *needlePoints2 = GaugeUtil::getPointInArc((int) m_halfsize, (int) m_halfsize, arcSize, arcStart, (int) (m_size * 0.3f), valueAmount);
@@ -139,6 +151,11 @@ void RoundGaugeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *st
 
     // Value
     painter->setFont(m_fontValue);
+
+    if (isHighlighted()) {
+        m_penNeedle.setColor(getStatusColor());
+        painter->setPen(m_penNeedle);
+    }
 
     QString valueText;
     valueText = valueText.setNum(m_value, 'f', m_decimal);

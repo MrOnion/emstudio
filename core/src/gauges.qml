@@ -102,6 +102,8 @@ Rectangle {
         height:200
         low: -10
         high: 50
+        lowDanger: 0
+        lowWarning: 10
         title: "Advance"
         unit: "deg"
         property string propertyMapProperty:"Advance"
@@ -131,13 +133,13 @@ Rectangle {
         y:10
         width:240
         height:120
-        low:-40
-        high:120
-        highWarning: 105
-        highDanger: 110
+        low:50
+        high:150
+        highWarning:100
+        highDanger:120
         decimal:1
         title: "CHT"
-        unit: "C"
+        unit: "\u00B0C"
         property string propertyMapProperty:"CHT"
         value: (propertyMap["CHT"] ? propertyMap["CHT"] : 0)
 	}
@@ -151,7 +153,7 @@ Rectangle {
         high:120
         decimal: 1
         title: "IAT"
-        unit: "C"
+        unit: "\u00B0C"
         property string propertyMapProperty:"IAT"
         value: (propertyMap["IAT"] ? propertyMap["IAT"] : 0)
 	}
@@ -169,7 +171,7 @@ Rectangle {
         highDanger: 18
         decimal: 2
         title: "BRV"
-        unit: "V"
+        unit: "Volt"
         property string propertyMapProperty:"BRV"
         value: (propertyMap["BRV"] ? propertyMap["BRV"] : 0)
     }
@@ -191,10 +193,11 @@ Rectangle {
         y:490
         width:240
         height:120
-        low:-100
-        high:100
-        title: "TFC"
-        property string propertyMapProperty:"TFCTotal"
-        value: (propertyMap["TFCTotal"] ? propertyMap["TFCTotal"] : 0)
+        low:100
+        high:300
+        title: "ETE"
+        unit: "%"
+        property string propertyMapProperty:"ETE"
+        value: (propertyMap["ETE"] ? propertyMap["ETE"] : 0)
     }
 }
